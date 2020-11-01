@@ -2,7 +2,7 @@
   "name": "com.caseydecoder.uisettings",
   "version": "0.0.1",
   "displayName": "UI Settings",
-  "description": "Scripts to easily couple Graphics Settings to UI Components.",
+  "description": "Easily couple Settings to UI Components.",
   "unity": "2019.3",
   "dependencies": {
     "com.unity.ugui": "1.0.0"

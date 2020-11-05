@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UISettings
 {
-    public class ResolutionSetting : UISetting<Dropdown>
+    public class ResolutionSettingOld : UISetting<Dropdown>
     {
         [SerializeField] private bool _descending = false;
 

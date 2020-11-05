@@ -2,7 +2,7 @@
 
 namespace UISettings.Editor
 {
-    [CustomEditor(typeof(ResolutionSetting))]
+    [CustomEditor(typeof(ResolutionSettingOld))]
     [CanEditMultipleObjects]
     public class ResolutionSettingEditor : UnityEditor.Editor
     {

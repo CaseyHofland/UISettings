@@ -11,7 +11,7 @@ namespace UISettings
         private Toggle _toggle;
         public Toggle toggle => _toggle ? _toggle : (_toggle = GetComponent<Toggle>());
 
-        [SerializeReference] public ToggleSetting toggleSetting = new VSyncSetting();
+        [SerializeReference] public ToggleSetting toggleSetting;
 
         protected virtual void OnEnable()
         {
@@ -26,7 +26,10 @@ namespace UISettings
 
         protected virtual void OnValidate()
         {
-            toggleSetting.UpdateView(toggle);
+            if(isActiveAndEnabled && !Application.IsPlaying(gameObject))
+            {
+                toggleSetting.UpdateView(toggle);
+            }
         }
     }
 }

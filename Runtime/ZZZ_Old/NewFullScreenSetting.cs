@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace UISettings
 {
+    [UIName("Something/FullScreen", order = 50)]
     public class NewFullScreenSetting : ToggleSetting
     {
         [Tooltip("Display if the game is windowed instead of full screen.")] [SerializeField] private bool _windowed;
@@ -16,14 +17,13 @@ namespace UISettings
             set
             {
                 _windowed = value;
+                //UpdateView();
             }
         }
 
         public override void UpdateView(Toggle toggle)
         {
             toggle.SetIsOnWithoutNotify(Screen.fullScreen != windowed);
-
-            Debug.Log("FullScreened");
         }
 
         protected internal override void ValueChanged(bool value)

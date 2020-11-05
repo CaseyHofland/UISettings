@@ -1,52 +1,93 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
 namespace UISettings
 {
-    public class AudioSetting : MonoBehaviour
+    public class AudioSetting : UISetting<Slider>
     {
-        public Slider slider;
-        public AudioMixer audioMixer;
-        public string exposedParameter;
-        public float minValue = -80f;
-        public float maxValue = 0f;
+        #region Properties
+        [SerializeField] private AudioMixer _audioMixer;
+        [SerializeField] private string _exposedParameter;
+        [SerializeField] private float _minValue = -80f;
+        [SerializeField] private float _maxValue = 0f;
 
-        public float value
+        public AudioMixer audioMixer
         {
-            get => Mathf.Lerp(minValue, maxValue, slider.normalizedValue);
-            set => slider.normalizedValue = Mathf.InverseLerp(minValue, maxValue, value);
-        }
-
-        public float normalizedValue
-        {
-            get => slider.normalizedValue;
-            set => slider.normalizedValue = Mathf.Clamp01(value);
-        }
-
-        private void OnEnable()
-        {
-            slider.onValueChanged.AddListener(OnValueChanged);
-
-            if(audioMixer && audioMixer.GetFloat(exposedParameter, out var value))
+            get => _audioMixer;
+            set
             {
-                if(isActiveAndEnabled)
-                {
-                    StartCoroutine(Coroutine());
-
-                    IEnumerator Coroutine()
-                    {
-                        yield return null;
-                        this.value = value;
-                    }
-                }
+                _audioMixer = value;
+                UpdateView();
             }
         }
 
-        private void OnDisable()
+        public string exposedParameter
         {
-            slider.onValueChanged.RemoveListener(OnValueChanged);
+            get => _exposedParameter;
+            set
+            {
+                _exposedParameter = value;
+                UpdateView();
+            }
+        }
+
+        public float minValue
+        {
+            get => _minValue;
+            set
+            {
+                _minValue = value;
+                UpdateView();
+            }
+        }
+
+        public float maxValue
+        {
+            get => _maxValue;
+            set
+            {
+                _maxValue = value;
+                UpdateView();
+            }
+        }
+
+        public float value
+        {
+            get => Mathf.Lerp(minValue, maxValue, selectable.normalizedValue);
+            set => selectable.normalizedValue = Mathf.InverseLerp(minValue, maxValue, value);
+        }
+        #endregion
+
+        protected override void Subscribe()
+        {
+            selectable.onValueChanged.AddListener(OnValueChanged);
+        }
+
+        protected override void Unsubscribe()
+        {
+            selectable.onValueChanged.RemoveListener(OnValueChanged);
+        }
+
+        protected override void OnValidate()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.delayCall += base.OnValidate;
+#else
+            base.OnValidate();
+#endif
+        }
+
+        public override void UpdateView()
+        {
+            if(audioMixer && audioMixer.GetFloat(exposedParameter, out var value))
+            {
+                var t = Mathf.InverseLerp(minValue, maxValue, value);
+                var input = Mathf.Lerp(selectable.minValue, selectable.maxValue, t);
+                selectable.SetValueWithoutNotify(input);
+
+                OnValueChanged(selectable.normalizedValue);
+            }
         }
 
         private void OnValueChanged(float value)
@@ -61,25 +102,8 @@ namespace UISettings
         {
             if(audioMixer && audioMixer.ClearFloat(exposedParameter))
             {
-                if(isActiveAndEnabled)
-                {
-                    StartCoroutine(Coroutine());
-
-                    IEnumerator Coroutine()
-                    {
-                        yield return null;
-                        if(audioMixer && audioMixer.GetFloat(exposedParameter, out var value))
-                        {
-                            this.value = value;
-                        }
-                    }
-                }
+                Invoke(nameof(UpdateView), Time.fixedUnscaledDeltaTime);
             }
-        }
-
-        private void Reset()
-        {
-            slider = GetComponent<Slider>();
         }
     }
 }

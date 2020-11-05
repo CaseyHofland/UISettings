@@ -3,22 +3,9 @@ using UnityEngine.UI;
 
 namespace UISettings
 {
-    public class FullScreenSetting : MonoBehaviour
+    public class FullScreenSetting : UISetting<Toggle>
     {
-        #region Properties
-        [SerializeField] private Toggle _toggle;
         [Tooltip("Display if the game is windowed instead of full screen.")] [SerializeField] private bool _windowed;
-
-        public Toggle toggle
-        {
-            get => _toggle;
-            set
-            {
-                OnDisable();
-                _toggle = value;
-                OnEnable();
-            }
-        }
 
         public bool windowed
         {
@@ -29,38 +16,26 @@ namespace UISettings
                 UpdateView();
             }
         }
-        #endregion
 
-        #region Unity Methods
-        private void OnEnable()
+        protected override void Subscribe()
         {
-            toggle.onValueChanged.AddListener(ValueChanged);
-
-            UpdateView();
+            selectable.onValueChanged.AddListener(ValueChanged);
         }
 
-        private void OnDisable()
+        protected override void Unsubscribe()
         {
-            toggle.onValueChanged.RemoveListener(ValueChanged);
+            selectable.onValueChanged.RemoveListener(ValueChanged);
         }
 
-        private void Reset()
+        public override void UpdateView()
         {
-            _toggle = GetComponent<Toggle>();
-        }
-        #endregion
-
-        #region Toggle Handling
-        public void UpdateView()
-        {
-            toggle.SetIsOnWithoutNotify(Screen.fullScreen != windowed);
+            selectable.SetIsOnWithoutNotify(Screen.fullScreen != windowed);
         }
 
         private void ValueChanged(bool value)
         {
             Screen.fullScreen = value != windowed;
         }
-        #endregion
     }
 }
 

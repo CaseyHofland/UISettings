@@ -5,22 +5,9 @@ using UnityEngine.UI;
 
 namespace UISettings
 {
-    public class ResolutionSetting : MonoBehaviour
+    public class ResolutionSetting : UISetting<Dropdown>
     {
-        #region Properties
-        [SerializeField] private Dropdown _dropdown;
         [SerializeField] private bool _descending = false;
-
-        public Dropdown dropdown
-        {
-            get => _dropdown;
-            set
-            {
-                OnDisable();
-                _dropdown = value;
-                OnEnable();
-            }
-        }
 
         public bool descending
         {
@@ -28,34 +15,23 @@ namespace UISettings
             set
             {
                 _descending = value;
-                SetOptions();
+                UpdateView();
             }
         }
-        #endregion
 
-        #region Unity Methods
-        private void OnEnable()
+        protected override void Subscribe()
         {
-            dropdown.onValueChanged.AddListener(ValueChanged);
-
-            SetOptions();
+            selectable.onValueChanged.AddListener(ValueChanged);
         }
 
-        private void OnDisable()
+        protected override void Unsubscribe()
         {
-            dropdown.onValueChanged.RemoveListener(ValueChanged);
+            selectable.onValueChanged.RemoveListener(ValueChanged);
         }
 
-        private void Reset()
+        public override void UpdateView()
         {
-            _dropdown = GetComponent<Dropdown>();
-        }
-        #endregion
-
-        #region Dropdown Handling
-        public void SetOptions()
-        {
-            dropdown.ClearOptions();
+            selectable.ClearOptions();
 
             var options = new List<string>(Array.ConvertAll(Screen.resolutions, resolution => $"{resolution.width}x{resolution.height}"));
             if(descending)
@@ -63,7 +39,7 @@ namespace UISettings
                 options.Reverse();
             }
 
-            dropdown.AddOptions(options);
+            selectable.AddOptions(options);
 
             var resolutionIndex = Array.IndexOf(Screen.resolutions, Screen.currentResolution);
             if(resolutionIndex != -1)
@@ -73,8 +49,8 @@ namespace UISettings
                     resolutionIndex = Screen.resolutions.Length - 1 - resolutionIndex;
                 }
 
-                dropdown.SetValueWithoutNotify(resolutionIndex);
-                dropdown.RefreshShownValue();
+                selectable.SetValueWithoutNotify(resolutionIndex);
+                selectable.RefreshShownValue();
             }
         }
 
@@ -88,6 +64,5 @@ namespace UISettings
             var resolution = Screen.resolutions[value];
             Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode);
         }
-        #endregion
     }
 }

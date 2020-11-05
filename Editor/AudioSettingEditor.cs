@@ -8,30 +8,30 @@ namespace UISettings.Editor
     [CanEditMultipleObjects]
     public class AudioSettingEditor : UnityEditor.Editor
     {
-        private SerializedProperty slider;
-        private SerializedProperty audioMixer;
-        private SerializedProperty exposedParameter;
-        private SerializedProperty minValue;
-        private SerializedProperty maxValue;
+        private SerializedProperty _selectable;
+        private SerializedProperty _audioMixer;
+        private SerializedProperty _exposedParameter;
+        private SerializedProperty _minValue;
+        private SerializedProperty _maxValue;
 
         private void OnEnable()
         {
-            slider = serializedObject.FindProperty(nameof(slider));
-            audioMixer = serializedObject.FindProperty(nameof(audioMixer));
-            exposedParameter = serializedObject.FindProperty(nameof(exposedParameter));
-            minValue = serializedObject.FindProperty(nameof(minValue));
-            maxValue = serializedObject.FindProperty(nameof(maxValue));
+            _selectable = serializedObject.FindProperty(nameof(_selectable));
+            _audioMixer = serializedObject.FindProperty(nameof(_audioMixer));
+            _exposedParameter = serializedObject.FindProperty(nameof(_exposedParameter));
+            _minValue = serializedObject.FindProperty(nameof(_minValue));
+            _maxValue = serializedObject.FindProperty(nameof(_maxValue));
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(slider);
-            EditorGUILayout.PropertyField(audioMixer);
-            if(audioMixer.objectReferenceValue != null)
+            EditorGUILayout.PropertyField(_selectable);
+            EditorGUILayout.PropertyField(_audioMixer);
+            if(_audioMixer.objectReferenceValue != null)
             {
-                var audioMixer = (AudioMixer)this.audioMixer.objectReferenceValue;
+                var audioMixer = (AudioMixer)this._audioMixer.objectReferenceValue;
 
                 // Exposed Parameters Popup
                 var parameters = (Array)audioMixer.GetType().GetProperty("exposedParameters").GetValue(audioMixer);
@@ -44,13 +44,13 @@ namespace UISettings.Editor
 
                 if(names.Length > 0)
                 {
-                    var index = Math.Max(Array.IndexOf(names, exposedParameter.stringValue), 0);
+                    var index = Math.Max(Array.IndexOf(names, _exposedParameter.stringValue), 0);
                     index = EditorGUILayout.Popup("Parameter", index, names);
-                    exposedParameter.stringValue = names[index];
+                    _exposedParameter.stringValue = names[index];
 
                     // Min Max Values
-                    EditorGUILayout.PropertyField(minValue);
-                    EditorGUILayout.PropertyField(maxValue);
+                    EditorGUILayout.PropertyField(_minValue);
+                    EditorGUILayout.PropertyField(_maxValue);
                 }
                 else
                 {

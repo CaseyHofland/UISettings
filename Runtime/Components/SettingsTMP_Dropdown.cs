@@ -11,23 +11,26 @@ namespace UISettings
         public TMP_Dropdown tmp_Dropdown => (TMP_Dropdown)selectable;
         public ITMP_DropdownSetting tmp_DropdownSetting => (ITMP_DropdownSetting)setting;
 
-        protected override void OnEnable()
+        protected virtual void OnEnable()
         {
-            tmp_Dropdown.onValueChanged.AddListener(tmp_DropdownSetting.ValueChanged);
-            tmp_DropdownSetting.UpdateView(tmp_Dropdown);
+            if(tmp_DropdownSetting != null)
+            {
+                tmp_Dropdown.onValueChanged.AddListener(tmp_DropdownSetting.ValueChanged);
+            }
         }
 
         protected virtual void OnDisable()
         {
-            tmp_Dropdown.onValueChanged.RemoveListener(tmp_DropdownSetting.ValueChanged);
+            if(tmp_DropdownSetting != null)
+            {
+                tmp_Dropdown.onValueChanged.RemoveListener(tmp_DropdownSetting.ValueChanged);
+            }
         }
 
-        protected override void OnValidate()
+        protected override void LateUpdate()
         {
-            if(isActiveAndEnabled && !Application.IsPlaying(gameObject))
-            {
-                tmp_DropdownSetting.UpdateView(tmp_Dropdown);
-            }
+            base.LateUpdate();
+            tmp_DropdownSetting?.UpdateView(tmp_Dropdown);
         }
     }
 }

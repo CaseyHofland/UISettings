@@ -4,22 +4,18 @@ using UnityEngine.UI;
 namespace UISettings
 {
     [RequireComponent(typeof(Selectable))]
+    [ExecuteAlways]
     [AddComponentMenu("UI/Settings/SettingsSelectable")]
     public class SettingsSelectable : MonoBehaviour
     {
         private Selectable _selectable;
         public Selectable selectable => _selectable ? _selectable : (_selectable = GetComponent<Selectable>());
 
-        [SerializeReference] public ISelectableSetting setting;
+        public Setting setting;
 
-        protected virtual void OnEnable()
+        protected virtual void LateUpdate()
         {
-            setting.UpdateView(selectable);
-        }
-
-        protected virtual void OnValidate()
-        {
-            if(isActiveAndEnabled && !Application.IsPlaying(gameObject))
+            if(setting)
             {
                 setting.UpdateView(selectable);
             }

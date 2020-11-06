@@ -10,23 +10,26 @@ namespace UISettings
         public Dropdown dropdown => (Dropdown)selectable;
         public IDropdownSetting dropdownSetting => (IDropdownSetting)setting;
 
-        protected override void OnEnable()
+        protected virtual void OnEnable()
         {
-            dropdownSetting.UpdateView(dropdown);
-            dropdown.onValueChanged.AddListener(dropdownSetting.ValueChanged);
+            if(dropdownSetting != null)
+            {
+                dropdown.onValueChanged.AddListener(dropdownSetting.ValueChanged);
+            }
         }
 
         protected virtual void OnDisable()
         {
-            dropdown.onValueChanged.RemoveListener(dropdownSetting.ValueChanged);
+            if(dropdownSetting != null)
+            {
+                dropdown.onValueChanged.RemoveListener(dropdownSetting.ValueChanged);
+            }
         }
 
-        protected override void OnValidate()
+        protected override void LateUpdate()
         {
-            if(isActiveAndEnabled && !Application.IsPlaying(gameObject))
-            {
-                dropdownSetting.UpdateView(dropdown);
-            }
+            base.LateUpdate();
+            dropdownSetting?.UpdateView(dropdown);
         }
     }
 }

@@ -4,21 +4,17 @@ using UnityEngine.Audio;
 
 namespace UISettings.Editor
 {
-    [CustomEditor(typeof(AudioSetting))]
+    [CustomEditor(typeof(AudioSetting), true)]
     [CanEditMultipleObjects]
     public class AudioSettingEditor : UnityEditor.Editor
     {
         private SerializedProperty audioMixer;
         private SerializedProperty exposedParameter;
-        private SerializedProperty minValue;
-        private SerializedProperty maxValue;
 
         private void OnEnable()
         {
             audioMixer = serializedObject.FindProperty(nameof(audioMixer));
             exposedParameter = serializedObject.FindProperty(nameof(exposedParameter));
-            minValue = serializedObject.FindProperty(nameof(minValue));
-            maxValue = serializedObject.FindProperty(nameof(maxValue));
         }
 
         public override void OnInspectorGUI()
@@ -45,9 +41,12 @@ namespace UISettings.Editor
                     index = EditorGUILayout.Popup("Parameter", index, names);
                     exposedParameter.stringValue = names[index];
 
-                    // Min Max Values
-                    EditorGUILayout.PropertyField(minValue);
-                    EditorGUILayout.PropertyField(maxValue);
+                    // Other Values
+                    var property = exposedParameter.Copy();
+                    while(property.NextVisible(false))
+                    {
+                        EditorGUILayout.PropertyField(property, true);
+                    }
                 }
                 else
                 {

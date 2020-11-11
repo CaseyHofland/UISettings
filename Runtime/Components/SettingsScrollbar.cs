@@ -8,28 +8,28 @@ namespace UISettings
     public class SettingsScrollbar : SettingsSelectable
     {
         public Scrollbar scrollbar => (Scrollbar)selectable;
-        public IScrollbarSetting scrollbarSetting => (IScrollbarSetting)setting;
+        public ISettingScrollbar settingScrollbar => (ISettingScrollbar)setting;
 
         protected virtual void OnEnable()
         {
-            if(scrollbarSetting != null)
+            if(settingScrollbar != null)
             {
-                scrollbar.onValueChanged.AddListener(scrollbarSetting.ValueChanged);
+                scrollbar.onValueChanged.AddListener(settingScrollbar.ValueChanged);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(scrollbarSetting != null)
+            if(settingScrollbar != null)
             {
-                scrollbar.onValueChanged.RemoveListener(scrollbarSetting.ValueChanged);
+                scrollbar.onValueChanged.RemoveListener(settingScrollbar.ValueChanged);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            scrollbarSetting?.UpdateView(scrollbar);
+            settingScrollbar?.UpdateView(scrollbar);
         }
     }
 }

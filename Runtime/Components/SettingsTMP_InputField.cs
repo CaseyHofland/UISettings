@@ -9,34 +9,34 @@ namespace UISettings
     public class SettingsTMP_InputField : SettingsSelectable
     {
         public TMP_InputField tmp_InputField => (TMP_InputField)selectable;
-        public ITMP_InputFieldSetting tmp_InputFieldSetting => (ITMP_InputFieldSetting)setting;
+        public ISettingTMP_InputField settingTMP_InputField => (ISettingTMP_InputField)setting;
 
         protected virtual void OnEnable()
         {
-            if(tmp_InputFieldSetting != null)
+            if(settingTMP_InputField != null)
             {
-                tmp_InputField.onValueChanged.AddListener(tmp_InputFieldSetting.ValueChanged);
-                tmp_InputField.onEndEdit.AddListener(tmp_InputFieldSetting.EndEdit);
-                tmp_InputField.onSelect.AddListener(tmp_InputFieldSetting.Select);
-                tmp_InputField.onDeselect.AddListener(tmp_InputFieldSetting.Deselect);
+                tmp_InputField.onValueChanged.AddListener(settingTMP_InputField.ValueChanged);
+                tmp_InputField.onEndEdit.AddListener(settingTMP_InputField.EndEdit);
+                tmp_InputField.onSelect.AddListener(settingTMP_InputField.Select);
+                tmp_InputField.onDeselect.AddListener(settingTMP_InputField.Deselect);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(tmp_InputFieldSetting != null)
+            if(settingTMP_InputField != null)
             {
-                tmp_InputField.onValueChanged.RemoveListener(tmp_InputFieldSetting.ValueChanged);
-                tmp_InputField.onEndEdit.RemoveListener(tmp_InputFieldSetting.EndEdit);
-                tmp_InputField.onSelect.RemoveListener(tmp_InputFieldSetting.Select);
-                tmp_InputField.onDeselect.RemoveListener(tmp_InputFieldSetting.Deselect);
+                tmp_InputField.onValueChanged.RemoveListener(settingTMP_InputField.ValueChanged);
+                tmp_InputField.onEndEdit.RemoveListener(settingTMP_InputField.EndEdit);
+                tmp_InputField.onSelect.RemoveListener(settingTMP_InputField.Select);
+                tmp_InputField.onDeselect.RemoveListener(settingTMP_InputField.Deselect);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            tmp_InputFieldSetting?.UpdateView(tmp_InputField);
+            settingTMP_InputField?.UpdateView(tmp_InputField);
         }
     }
 }

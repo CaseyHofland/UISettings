@@ -8,28 +8,28 @@ namespace UISettings
     public class SettingsSlider : SettingsSelectable
     {
         public Slider slider => (Slider)selectable;
-        public ISliderSetting sliderSetting => (ISliderSetting)setting;
+        public ISettingSlider settingSlider => (ISettingSlider)setting;
 
         protected virtual void OnEnable()
         {
-            if(sliderSetting != null)
+            if(settingSlider != null)
             {
-                slider.onValueChanged.AddListener(sliderSetting.ValueChanged);
+                slider.onValueChanged.AddListener(settingSlider.ValueChanged);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(sliderSetting != null)
+            if(settingSlider != null)
             {
-                slider.onValueChanged.RemoveListener(sliderSetting.ValueChanged);
+                slider.onValueChanged.RemoveListener(settingSlider.ValueChanged);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            sliderSetting?.UpdateView(slider);
+            settingSlider?.UpdateView(slider);
         }
     }
 }

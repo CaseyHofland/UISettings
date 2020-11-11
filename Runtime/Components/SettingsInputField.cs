@@ -8,30 +8,30 @@ namespace UISettings
     public class SettingsInputField : SettingsSelectable
     {
         public InputField inputField => (InputField)selectable;
-        public IInputFieldSetting inputFieldSetting => (IInputFieldSetting)setting;
+        public ISettingInputField settingInputField => (ISettingInputField)setting;
 
         protected virtual void OnEnable()
         {
-            if(inputFieldSetting != null)
+            if(settingInputField != null)
             {
-                inputField.onValueChanged.AddListener(inputFieldSetting.ValueChanged);
-                inputField.onEndEdit.AddListener(inputFieldSetting.EndEdit);
+                inputField.onValueChanged.AddListener(settingInputField.ValueChanged);
+                inputField.onEndEdit.AddListener(settingInputField.EndEdit);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(inputFieldSetting != null)
+            if(settingInputField != null)
             {
-                inputField.onValueChanged.RemoveListener(inputFieldSetting.ValueChanged);
-                inputField.onEndEdit.RemoveListener(inputFieldSetting.EndEdit);
+                inputField.onValueChanged.RemoveListener(settingInputField.ValueChanged);
+                inputField.onEndEdit.RemoveListener(settingInputField.EndEdit);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            inputFieldSetting?.UpdateView(inputField);
+            settingInputField?.UpdateView(inputField);
         }
     }
 }

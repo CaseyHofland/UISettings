@@ -10,49 +10,50 @@ namespace UISettings.Editor
     [CustomEditor(typeof(SettingsSelectable), true)]
     public class SettingsSelectableEditor : UnityEditor.Editor
     {
-        private SerializedProperty setting;
-        private UnityEditor.Editor settingEditor;
+        protected SerializedProperty setting;
+        protected UnityEditor.Editor settingEditor;
+
+        protected Selectable selectable => (Selectable)typeof(SettingsSelectable).GetProperty(nameof(selectable)).GetValue(target);
 
         private static Type[] subTypes;
         private static string[] subTypeDisplayedOptions;
         private int index;
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             setting = serializedObject.FindProperty(nameof(setting));
 
-            var selectable = typeof(SettingsSelectable).GetProperty("selectable").GetValue(target);
             Type iSettingType;
             switch(selectable)
             {
 #if TMP
                 case TMPro.TMP_InputField _:
-                    iSettingType = typeof(ITMP_InputFieldSetting);
+                    iSettingType = typeof(ISettingTMP_InputField);
                     break;
                 case TMPro.TMP_Dropdown _:
-                    iSettingType = typeof(ITMP_DropdownSetting);
+                    iSettingType = typeof(ISettingTMP_Dropdown);
                     break;
 #endif
                 case InputField _:
-                    iSettingType = typeof(IInputFieldSetting);
+                    iSettingType = typeof(ISettingInputField);
                     break;
                 case Scrollbar _:
-                    iSettingType = typeof(IScrollbarSetting);
+                    iSettingType = typeof(ISettingScrollbar);
                     break;
                 case Dropdown _:
-                    iSettingType = typeof(IDropdownSetting);
+                    iSettingType = typeof(ISettingDropdown);
                     break;
                 case Slider _:
-                    iSettingType = typeof(ISliderSetting);
+                    iSettingType = typeof(ISettingSlider);
                     break;
                 case Toggle _:
-                    iSettingType = typeof(IToggleSetting);
+                    iSettingType = typeof(ISettingToggle);
                     break;
                 case Button _:
-                    iSettingType = typeof(IButtonSetting);
+                    iSettingType = typeof(ISettingButton);
                     break;
                 case Selectable _:
-                    iSettingType = typeof(ISelectableSetting);
+                    iSettingType = typeof(ISettingSelectable);
                     break;
                 default:
                     iSettingType = null;
@@ -89,10 +90,10 @@ namespace UISettings.Editor
         {
             serializedObject.Update();
 
-            EditorGUI.BeginChangeCheck();
-            index = EditorGUILayout.Popup("Setting", index, subTypeDisplayedOptions);
-            if(EditorGUI.EndChangeCheck())
+            int newIndex = EditorGUILayout.Popup("Setting", index, subTypeDisplayedOptions);
+            if(newIndex != index)
             {
+                index = newIndex;
                 Undo.DestroyObjectImmediate(setting.objectReferenceValue);
                 setting.objectReferenceValue = CreateInstance(subTypes[index]);
                 settingEditor = CreateEditor(setting.objectReferenceValue);

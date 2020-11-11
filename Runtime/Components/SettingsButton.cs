@@ -8,28 +8,28 @@ namespace UISettings
     public class SettingsButton : SettingsSelectable
     {
         public Button button => (Button)selectable;
-        public IButtonSetting buttonSetting => (IButtonSetting)setting;
+        public ISettingButton settingButton => (ISettingButton)setting;
 
         protected virtual void OnEnable()
         {
-            if(buttonSetting != null)
+            if(settingButton != null)
             {
-                button.onClick.AddListener(buttonSetting.Clicked);
+                button.onClick.AddListener(settingButton.Clicked);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(buttonSetting != null)
+            if(settingButton != null)
             {
-                button.onClick.RemoveListener(buttonSetting.Clicked);
+                button.onClick.RemoveListener(settingButton.Clicked);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            buttonSetting?.UpdateView(button);
+            settingButton?.UpdateView(button);
         }
     }
 }

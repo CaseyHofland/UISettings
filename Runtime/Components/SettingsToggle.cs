@@ -8,29 +8,28 @@ namespace UISettings
     public class SettingsToggle : SettingsSelectable
     {
         public Toggle toggle => (Toggle)selectable;
-        public IToggleSetting toggleSetting => (IToggleSetting)setting;
+        public ISettingToggle settingToggle => (ISettingToggle)setting;
 
         protected virtual void OnEnable()
         {
-            if(toggleSetting != null)
+            if(settingToggle != null)
             {
-                toggle.onValueChanged.AddListener(toggleSetting.ValueChanged);
+                toggle.onValueChanged.AddListener(settingToggle.ValueChanged);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(toggleSetting != null)
+            if(settingToggle != null)
             {
-                toggle.onValueChanged.RemoveListener(toggleSetting.ValueChanged);
+                toggle.onValueChanged.RemoveListener(settingToggle.ValueChanged);
             }
         }
 
         protected override void LateUpdate()
         {
-
             base.LateUpdate();
-            toggleSetting?.UpdateView(toggle);
+            settingToggle?.UpdateView(toggle);
         }
     }
 }

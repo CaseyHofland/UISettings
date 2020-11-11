@@ -9,28 +9,33 @@ namespace UISettings
     public class SettingsTMP_Dropdown : SettingsSelectable
     {
         public TMP_Dropdown tmp_Dropdown => (TMP_Dropdown)selectable;
-        public ITMP_DropdownSetting tmp_DropdownSetting => (ITMP_DropdownSetting)setting;
+        public ISettingTMP_Dropdown settingTMP_Dropdown => (ISettingTMP_Dropdown)setting;
 
         protected virtual void OnEnable()
         {
-            if(tmp_DropdownSetting != null)
+            if(settingTMP_Dropdown != null)
             {
-                tmp_Dropdown.onValueChanged.AddListener(tmp_DropdownSetting.ValueChanged);
+                tmp_Dropdown.onValueChanged.AddListener(settingTMP_Dropdown.ValueChanged);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(tmp_DropdownSetting != null)
+            if(settingTMP_Dropdown != null)
             {
-                tmp_Dropdown.onValueChanged.RemoveListener(tmp_DropdownSetting.ValueChanged);
+                tmp_Dropdown.onValueChanged.RemoveListener(settingTMP_Dropdown.ValueChanged);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            tmp_DropdownSetting?.UpdateView(tmp_Dropdown);
+            settingTMP_Dropdown?.UpdateView(tmp_Dropdown);
+        }
+
+        public void ResetOptions()
+        {
+            settingTMP_Dropdown.ResetOptions(tmp_Dropdown.options);
         }
     }
 }

@@ -8,28 +8,33 @@ namespace UISettings
     public class SettingsDropdown : SettingsSelectable
     {
         public Dropdown dropdown => (Dropdown)selectable;
-        public IDropdownSetting dropdownSetting => (IDropdownSetting)setting;
+        public ISettingDropdown settingDropdown => (ISettingDropdown)setting;
 
         protected virtual void OnEnable()
         {
-            if(dropdownSetting != null)
+            if(settingDropdown != null)
             {
-                dropdown.onValueChanged.AddListener(dropdownSetting.ValueChanged);
+                dropdown.onValueChanged.AddListener(settingDropdown.ValueChanged);
             }
         }
 
         protected virtual void OnDisable()
         {
-            if(dropdownSetting != null)
+            if(settingDropdown != null)
             {
-                dropdown.onValueChanged.RemoveListener(dropdownSetting.ValueChanged);
+                dropdown.onValueChanged.RemoveListener(settingDropdown.ValueChanged);
             }
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            dropdownSetting?.UpdateView(dropdown);
+            settingDropdown?.UpdateView(dropdown);
+        }
+
+        public void ResetOptions()
+        {
+            settingDropdown.ResetOptions(dropdown.options);
         }
     }
 }
